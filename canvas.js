@@ -19,12 +19,13 @@ class Circle {
   constructor(x, y, dx, dy, radius) {
     this.x = x;
     this.y = y;
-    this.dx = dx;
-    this.dy = dy;
+    this.dx = Math.random() > 0.5 ? dx : -dx;
+    this.dy = Math.random() > 0.5 ? dy : -dy;
     this.radius = radius;
     this.initialRadius = radius;
     this.colors = ["#323050", "#21445B", "#1A6566", "#5D8A66"];
     this.color = this.colors[Math.floor(Math.random() * 4)];
+    this.distance = 75;
 
     this.draw = function () {
       ctx.beginPath();
@@ -44,14 +45,14 @@ class Circle {
       this.y += this.dy;
 
       if (
-        mouse.x - this.x < 100 &&
-        mouse.x - this.x > -100 &&
-        mouse.y - this.y < 100 &&
-        mouse.y - this.y > -100
+        mouse.x - this.x < this.distance &&
+        mouse.x - this.x > -this.distance &&
+        mouse.y - this.y < this.distance &&
+        mouse.y - this.y > -this.distance
       ) {
-        this.radius += this.radius < 50 ? 2 : 0;
+        this.radius += this.radius < 50 ? 8 : 0;
       } else if (this.radius > this.initialRadius) {
-        this.radius -= 1;
+        this.radius -= 0.8;
       }
 
       this.draw();
@@ -61,12 +62,12 @@ class Circle {
 
 var circle1 = new Circle(100, 75, 4, 4, 30);
 var circles = [];
-for (var i = 0; i < 300; i++) {
+for (var i = 0; i < 1100; i++) {
   let x = Math.random() * (canvas.width - 60) + 30;
   let y = Math.random() * (canvas.height - 60) + 30;
   let dx = Math.random() * 2;
   let dy = Math.random() * 2;
-  let radius = Math.random() * 10 + 1;
+  let radius = Math.random() * 3 + 1;
   circles.push(new Circle(x, y, dx, dy, radius));
 }
 console.log(circles);
