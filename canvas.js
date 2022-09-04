@@ -113,6 +113,8 @@ var pallet = pallets[Math.floor(Math.random() * pallets.length)];
 const mouse = {
   x: undefined,
   y: undefined,
+  down: false,
+  radius: 10,
 };
 
 window.addEventListener("mousemove", (event) => {
@@ -120,8 +122,11 @@ window.addEventListener("mousemove", (event) => {
   mouse.y = event.y;
 });
 
-window.addEventListener("mouseup", (event) => {
-  window.location = window.location;
+window.addEventListener("wheel", (event) => {
+  mouse.radius += event.deltaY > 0 ? -2 : 2;
+  if (mouse.radius < 10) {
+    mouse.radius = 10;
+  }
 });
 
 class Circle {
@@ -132,16 +137,14 @@ class Circle {
     this.dy = Math.random() > 0.5 ? dy : -dy;
     this.radius = radius;
     this.initialRadius = radius;
-    this.colors = [...pallet.slice(1)];
-    this.color = this.colors[Math.floor(Math.random() * 4)];
+    this.colors = pallet.slice(1);
+    this.initialColor = this.color = this.colors[Math.floor(Math.random() * 4)];
     this.distance = 50;
 
     this.draw = function () {
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
       ctx.fillStyle = this.color;
-      ctx.strokeStyle = "white";
-      ctx.stroke();
       ctx.fill();
     };
 
@@ -153,25 +156,35 @@ class Circle {
       this.x += this.dx;
       this.y += this.dy;
 
-      if (
-        mouse.x - this.x < this.distance &&
-        mouse.x - this.x > -this.distance &&
-        mouse.y - this.y < this.distance &&
-        mouse.y - this.y > -this.distance
-      ) {
-        this.radius += this.radius < 30 ? 4 : 0;
+      this.distanceToMouse = () => {
+        let xDistance = mouse.x - this.x;
+        let yDistance = mouse.y - this.y;
+        return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+      };
+
+      if (this.distanceToMouse() < mouse.radius && mouse.down) {
+        this.radius += this.radius < mouse.radius / 2 ? 8 : 0;
+        this.color = this.initialColor;
       } else if (this.radius > this.initialRadius) {
         this.radius -= 0.5;
+        this.color = this.initialColor;
+      } else {
+        this.radius = 0;
       }
 
       this.draw();
+    };
+
+    this.pickColor = () => {
+      this.colors = pallet.slice(1);
+      this.initialColor = this.colors[Math.floor(Math.random() * 4)];
     };
   }
 }
 
 var circle1 = new Circle(100, 75, 4, 4, 30);
 var circles = [];
-for (var i = 0; i < 1100; i++) {
+for (var i = 0; i < 5000; i++) {
   let x = Math.random() * (canvas.width - 60) + 30;
   let y = Math.random() * (canvas.height - 60) + 30;
   let dx = Math.random() * 2;
@@ -179,11 +192,30 @@ for (var i = 0; i < 1100; i++) {
   let radius = Math.random() * 2 + 1;
   circles.push(new Circle(x, y, dx, dy, radius));
 }
+
+// window.addEventListener("mouseup", (event) => {
+//   pallet = pallets[Math.floor(Math.random() * pallets.length)];
+//   circles.forEach((circle) => circle.pickColor());
+// });
+
+window.addEventListener("mousedown", () => {
+  mouse.down = true;
+});
+
+window.addEventListener("mouseup", () => {
+  mouse.down = false;
+});
+
 function animate() {
   requestAnimationFrame(animate);
   ctx.fillStyle = pallet[0];
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   circles.forEach((circle) => circle.update());
+
+  ctx.beginPath();
+  ctx.arc(mouse.x, mouse.y, mouse.radius, 0, Math.PI * 2);
+  ctx.strokeStyle = "black";
+  ctx.stroke();
 }
 
 animate();
