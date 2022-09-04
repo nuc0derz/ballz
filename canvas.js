@@ -179,7 +179,6 @@ for (var i = 0; i < 1100; i++) {
   let radius = Math.random() * 2 + 1;
   circles.push(new Circle(x, y, dx, dy, radius));
 }
-console.log(circles);
 function animate() {
   requestAnimationFrame(animate);
   ctx.fillStyle = pallet[0];
