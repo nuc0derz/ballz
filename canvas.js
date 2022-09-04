@@ -5,6 +5,16 @@ canvas.height = window.innerHeight;
 
 const ctx = canvas.getContext("2d");
 
+const mouse = {
+  x: undefined,
+  y: undefined,
+};
+
+window.addEventListener("mousemove", (event) => {
+  mouse.x = event.x;
+  mouse.y = event.y;
+});
+
 class Circle {
   constructor(x, y, dx, dy, radius) {
     this.x = x;
@@ -12,6 +22,7 @@ class Circle {
     this.dx = dx;
     this.dy = dy;
     this.radius = radius;
+    this.initialRadius = radius;
     this.colors = ["#323050", "#21445B", "#1A6566", "#5D8A66"];
     this.color = this.colors[Math.floor(Math.random() * 4)];
 
@@ -31,6 +42,18 @@ class Circle {
         this.dy = -this.dy;
       this.x += this.dx;
       this.y += this.dy;
+
+      if (
+        mouse.x - this.x < 100 &&
+        mouse.x - this.x > -100 &&
+        mouse.y - this.y < 100 &&
+        mouse.y - this.y > -100
+      ) {
+        this.radius += this.radius < 50 ? 2 : -1;
+      } else if (this.radius > this.initialRadius) {
+        this.radius -= 1;
+      }
+
       this.draw();
     };
   }
@@ -38,11 +61,11 @@ class Circle {
 
 var circle1 = new Circle(100, 75, 4, 4, 30);
 var circles = [];
-for (var i = 0; i < 100; i++) {
+for (var i = 0; i < 300; i++) {
   let x = Math.random() * (canvas.width - 60) + 30;
   let y = Math.random() * (canvas.height - 60) + 30;
-  let dx = Math.random() * 3 + 1;
-  let dy = Math.random() * 3 + 1;
+  let dx = Math.random() * 2;
+  let dy = Math.random() * 2;
   let radius = Math.random() * 10 + 1;
   circles.push(new Circle(x, y, dx, dy, radius));
 }
@@ -53,9 +76,5 @@ function animate() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   circles.forEach((circle) => circle.update());
 }
-
-window.addEventListener("mousemove", (event) => {
-  console.log(event);
-});
 
 animate();
