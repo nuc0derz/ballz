@@ -49,7 +49,7 @@ class Circle {
         mouse.y - this.y < 100 &&
         mouse.y - this.y > -100
       ) {
-        this.radius += this.radius < 50 ? 2 : -1;
+        this.radius += this.radius < 50 ? 2 : 0;
       } else if (this.radius > this.initialRadius) {
         this.radius -= 1;
       }
