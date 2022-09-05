@@ -119,12 +119,12 @@ const mouse = {
   radius: 10,
 };
 
-window.addEventListener("mousemove", (event) => {
+canvas.addEventListener("mousemove", (event) => {
   mouse.x = event.x - 120;
   mouse.y = event.y;
 });
 
-window.addEventListener("wheel", (event) => {
+canvas.addEventListener("wheel", (event) => {
   mouse.radius += event.deltaY > 0 ? -2 : 2;
   if (mouse.radius < 10) {
     mouse.radius = 10;
@@ -146,7 +146,7 @@ class Circle {
     this.draw = function () {
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-      ctx.fillStyle = this.color;
+      ctx.fillStyle = this.initialColor;
       ctx.fill();
     };
 
@@ -167,7 +167,7 @@ class Circle {
       if (this.distanceToMouse() < mouse.radius && mouse.down) {
         this.radius += this.radius < mouse.radius / 2 ? 8 : 0;
       } else if (this.radius > this.initialRadius) {
-        this.radius -= 0.1;
+        this.radius -= this.radius * 0.01;
       } else {
         this.radius = 0;
       }
@@ -190,11 +190,11 @@ class Circle {
 
 var circle1 = new Circle(100, 75, 4, 4, 30);
 var circles = [];
-for (var i = 0; i < 5000; i++) {
-  let x = Math.random() * (canvas.width - 60) + 30;
-  let y = Math.random() * (canvas.height - 60) + 30;
-  let dx = Math.random() * 2;
-  let dy = Math.random() * 2;
+for (var i = 0; i < 500; i++) {
+  let x = Math.random() * (canvas.width - 120) + 30;
+  let y = Math.random() * (canvas.height - 120) + 30;
+  let dx = Math.random() * 3;
+  let dy = Math.random() * 3;
   let radius = Math.random() * 2 + 1;
   circles.push(new Circle(x, y, dx, dy, radius));
 }
@@ -204,12 +204,12 @@ const handleChangeColor = () => {
   circles.forEach((c) => c.pickColor());
 };
 
-window.addEventListener("mousedown", (e) => {
+canvas.addEventListener("mousedown", (e) => {
   if (e.button === 0) mouse.down = true;
   if (e.button === 2) mouse.erase = true;
 });
 
-window.addEventListener("mouseup", (e) => {
+canvas.addEventListener("mouseup", (e) => {
   if (e.button === 0) mouse.down = false;
   if (e.button === 2) mouse.erase = false;
 });
