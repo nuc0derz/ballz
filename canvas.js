@@ -1,6 +1,8 @@
+window.addEventListener("contextmenu", (e) => e.preventDefault());
+
 const canvas = document.querySelector("canvas");
 
-canvas.width = window.innerWidth;
+canvas.width = window.innerWidth - 120;
 canvas.height = window.innerHeight;
 
 const ctx = canvas.getContext("2d");
@@ -118,7 +120,7 @@ const mouse = {
 };
 
 window.addEventListener("mousemove", (event) => {
-  mouse.x = event.x;
+  mouse.x = event.x - 120;
   mouse.y = event.y;
 });
 
@@ -164,12 +166,16 @@ class Circle {
 
       if (this.distanceToMouse() < mouse.radius && mouse.down) {
         this.radius += this.radius < mouse.radius / 2 ? 8 : 0;
-        this.color = this.initialColor;
       } else if (this.radius > this.initialRadius) {
-        this.radius -= 0.5;
-        this.color = this.initialColor;
+        this.radius -= 0.1;
       } else {
         this.radius = 0;
+      }
+
+      if (this.distanceToMouse() < mouse.radius && mouse.erase) {
+        if (this.radius > this.initialRadius) {
+          this.radius = 0;
+        }
       }
 
       this.draw();
@@ -193,17 +199,19 @@ for (var i = 0; i < 5000; i++) {
   circles.push(new Circle(x, y, dx, dy, radius));
 }
 
-// window.addEventListener("mouseup", (event) => {
-//   pallet = pallets[Math.floor(Math.random() * pallets.length)];
-//   circles.forEach((circle) => circle.pickColor());
-// });
+const handleChangeColor = () => {
+  pallet = pallets[Math.floor(Math.random() * pallets.length)];
+  circles.forEach((c) => c.pickColor());
+};
 
-window.addEventListener("mousedown", () => {
-  mouse.down = true;
+window.addEventListener("mousedown", (e) => {
+  if (e.button === 0) mouse.down = true;
+  if (e.button === 2) mouse.erase = true;
 });
 
-window.addEventListener("mouseup", () => {
-  mouse.down = false;
+window.addEventListener("mouseup", (e) => {
+  if (e.button === 0) mouse.down = false;
+  if (e.button === 2) mouse.erase = false;
 });
 
 function animate() {
