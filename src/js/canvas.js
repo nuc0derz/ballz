@@ -1,11 +1,24 @@
+import * as dat from "dat.gui";
 window.addEventListener("contextmenu", (e) => e.preventDefault());
 
 const canvas = document.querySelector("canvas");
 
-canvas.width = window.innerWidth - 120;
+canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const ctx = canvas.getContext("2d");
+
+const values = {
+  mouseRadius: 10,
+  changeColor: function () {
+    handleChangeColor();
+  },
+};
+
+const gui = new dat.GUI();
+
+gui.add(values, "mouseRadius", 10, 100);
+gui.add(values, "changeColor");
 
 const pallets = [
   ["#FFDBE1", "#E8C8DD", "#FDE9FF", "#DCC8E8", "#E9DBFF"],
@@ -120,19 +133,20 @@ const mouse = {
 };
 
 canvas.addEventListener("mousemove", (event) => {
-  mouse.x = event.x - 120;
+  mouse.x = event.x;
   mouse.y = event.y;
 });
 canvas.addEventListener("touchmove", (event) => {
   event.preventDefault();
-  mouse.x = event.touches[0].clientX - 120;
+  mouse.x = event.touches[0].clientX;
   mouse.y = event.touches[0].clientY;
 });
 
 canvas.addEventListener("wheel", (event) => {
-  mouse.radius += event.deltaY > 0 ? -2 : 2;
-  if (mouse.radius < 10) {
-    mouse.radius = 10;
+  event.preventDefault();
+  values.mouseRadius += event.deltaY > 0 ? -2 : 2;
+  if (values.mouseRadius < 10) {
+    values.mouseRadius = 10;
   }
 });
 
@@ -169,15 +183,15 @@ class Circle {
         return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
       };
 
-      if (this.distanceToMouse() < mouse.radius && mouse.down) {
-        this.radius += this.radius < mouse.radius / 2 ? 8 : 0;
+      if (this.distanceToMouse() < values.mouseRadius && mouse.down) {
+        this.radius += this.radius < values.mouseRadius / 2 ? 8 : 0;
       } else if (this.radius > this.initialRadius) {
         this.radius -= this.radius * 0.01;
       } else {
         this.radius = 0;
       }
 
-      if (this.distanceToMouse() < mouse.radius && mouse.erase) {
+      if (this.distanceToMouse() < values.mouseRadius && mouse.erase) {
         if (this.radius > this.initialRadius) {
           this.radius = 0;
         }
@@ -196,8 +210,8 @@ class Circle {
 var circle1 = new Circle(100, 75, 4, 4, 30);
 var circles = [];
 for (var i = 0; i < 500; i++) {
-  let x = Math.random() * (canvas.width - 120) + 30;
-  let y = Math.random() * (canvas.height - 120) + 30;
+  let x = Math.random() * canvas.width + 30;
+  let y = Math.random() * canvas.height + 30;
   let dx = Math.random() * 3;
   let dy = Math.random() * 3;
   let radius = Math.random() * 2 + 1;
@@ -234,7 +248,7 @@ function animate() {
   circles.forEach((circle) => circle.update());
 
   ctx.beginPath();
-  ctx.arc(mouse.x, mouse.y, mouse.radius, 0, Math.PI * 2);
+  ctx.arc(mouse.x, mouse.y, values.mouseRadius, 0, Math.PI * 2);
   ctx.strokeStyle = "black";
   ctx.stroke();
 }
