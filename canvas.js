@@ -123,6 +123,10 @@ canvas.addEventListener("mousemove", (event) => {
   mouse.x = event.x - 120;
   mouse.y = event.y;
 });
+canvas.addEventListener("touchmove", (event) => {
+  mouse.x = event.x - 120;
+  mouse.y = event.y;
+});
 
 canvas.addEventListener("wheel", (event) => {
   mouse.radius += event.deltaY > 0 ? -2 : 2;
@@ -208,8 +212,16 @@ canvas.addEventListener("mousedown", (e) => {
   if (e.button === 0) mouse.down = true;
   if (e.button === 2) mouse.erase = true;
 });
+canvas.addEventListener("touchstart", (e) => {
+  if (e.button === 0) mouse.down = true;
+  if (e.button === 2) mouse.erase = true;
+});
 
 canvas.addEventListener("mouseup", (e) => {
+  if (e.button === 0) mouse.down = false;
+  if (e.button === 2) mouse.erase = false;
+});
+canvas.addEventListener("touchend", (e) => {
   if (e.button === 0) mouse.down = false;
   if (e.button === 2) mouse.erase = false;
 });
