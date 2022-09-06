@@ -213,6 +213,7 @@ canvas.addEventListener("mousedown", (e) => {
   if (e.button === 2) mouse.erase = true;
 });
 canvas.addEventListener("touchstart", (e) => {
+  e.preventDefault();
   if (e.button === 0) mouse.down = true;
   if (e.button === 2) mouse.erase = true;
 });
@@ -222,6 +223,7 @@ canvas.addEventListener("mouseup", (e) => {
   if (e.button === 2) mouse.erase = false;
 });
 canvas.addEventListener("touchend", (e) => {
+  e.preventDefault();
   if (e.button === 0) mouse.down = false;
   if (e.button === 2) mouse.erase = false;
 });
