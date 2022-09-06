@@ -125,8 +125,8 @@ canvas.addEventListener("mousemove", (event) => {
 });
 canvas.addEventListener("touchmove", (event) => {
   event.preventDefault();
-  mouse.x = event.x - 120;
-  mouse.y = event.y;
+  mouse.x = event.touches[0].clientX - 120;
+  mouse.y = event.touches[0].clientY;
 });
 
 canvas.addEventListener("wheel", (event) => {
@@ -215,8 +215,7 @@ canvas.addEventListener("mousedown", (e) => {
 });
 canvas.addEventListener("touchstart", (e) => {
   e.preventDefault();
-  if (e.button === 0) mouse.down = true;
-  if (e.button === 2) mouse.erase = true;
+  mouse.down = true;
 });
 
 canvas.addEventListener("mouseup", (e) => {
@@ -225,8 +224,7 @@ canvas.addEventListener("mouseup", (e) => {
 });
 canvas.addEventListener("touchend", (e) => {
   e.preventDefault();
-  if (e.button === 0) mouse.down = false;
-  if (e.button === 2) mouse.erase = false;
+  mouse.down = false;
 });
 
 function animate() {
