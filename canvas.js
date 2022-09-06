@@ -124,6 +124,7 @@ canvas.addEventListener("mousemove", (event) => {
   mouse.y = event.y;
 });
 canvas.addEventListener("touchmove", (event) => {
+  e.preventDefault();
   mouse.x = event.x - 120;
   mouse.y = event.y;
 });
